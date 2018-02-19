@@ -35,4 +35,18 @@ function initMap() {
 		},
 
 	}
+
+	$('.newPlace').click(function (e) {
+		e.preventDefault();
+		drawingActions.showTools();
+		$(this).attr('disabled', 'disabled');
+		$('.close').removeAttr('disabled');
+	});
+
+	$('.close').click(function (e) {
+		e.preventDefault();
+		drawingActions.hideTools();
+		$(this).attr('disabled', 'disabled');
+		$('.newPlace').removeAttr('disabled');
+	});
 }
