@@ -24,14 +24,14 @@
 		}
 
 		.modal_form {
-			width: 90%;
-			height: 70%;
+			width: 450px;
+			height: 200px;
 			border-radius: 5px;
 			border: 3px #000 solid;
 			background: #fff;
 			position: fixed;
-			top: 8%;
-			left: 4%;
+			top: 35%;
+			left: 35%;
 			display: none;
 			opacity: 0;
 			z-index: 5;
@@ -78,6 +78,13 @@
 			margin-left: 10px;
 			margin-right: 10px;
 		}
+
+		.choice {
+			display: none;
+		}
+		form input{
+			margin: 10px;
+		}
 	</style>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGeH1ktG_X3LfuDGbKfFwAMhikYw1aAms&libraries=drawing&callback=initMap"
 	 async defer></script>
@@ -87,12 +94,23 @@
 	<div class="control">
 		<h2>Drawing on Google Maps</h2>
 		<button class="newPlace">New Place</button>
-		<button disabled class="close">Close</button>
 		<div class="choice">
 			<button class="save">Save</button>
 			<button class="cancel">Cancel</button>
 		</div>
 		<div class="modal_form">
+			<form class="create_form">
+				Name
+				<input type="text">
+				<br> Adress
+				<input type="text">
+				<br> Phone
+				<input type="text">
+				<br> Email
+				<input type="text">
+				<br>
+				<input type="submit" value="Create">
+			</form>
 			<span class="modal_close">&times;</span>
 		</div>
 		<div class="overlay"></div>
