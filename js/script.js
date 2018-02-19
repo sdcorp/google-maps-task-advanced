@@ -26,7 +26,7 @@ function initMap() {
 				drawingControl: false
 			});
 		},
-
+		// Откл рисование
 		resetDrawing() {
 			drawingManager.setDrawingMode(null)
 		},
@@ -37,18 +37,32 @@ function initMap() {
 
 	}
 
+	// Новое место: показываем тулбар, откл кнопку, показываем кнопки выбора
 	$('.newPlace').click(function (e) {
 		e.preventDefault();
 		drawingActions.showTools();
 		$(this).attr('disabled', 'disabled');
-		$('.close').removeAttr('disabled');
+		$('.choice').fadeIn(400);
 	});
 
-	$('.close').click(function (e) {
+	// Сохранить: добавляем модалку
+	$('.save').click(function (e) {
 		e.preventDefault();
-		drawingActions.hideTools();
-		$(this).attr('disabled', 'disabled');
+		if (place.length !== 0) {
+			modalActions.openModal();
+			modalActions.closeModal();
+		} else {
+			alert('First, create place!')
+		}
+	});
+
+	// После Submit: вкл кнопку NewPlace, закрываем модалку, скрываем кнопки выбора, чистим массив
+	$('.create_form').submit(function (e) {
+		e.preventDefault();
 		$('.newPlace').removeAttr('disabled');
+		modalActions.closeModalInstantly();
+		$('.choice').fadeOut(100);
+		place.pop();
 	});
 
 	google.maps.event.addListener(drawingManager, 'rectanglecomplete', function (rectangle) {
@@ -56,11 +70,11 @@ function initMap() {
 		place.push(rectangle_coordinates);
 		console.log(place);
 
-		// Фигура нарисована: нельзя рисовать, тулбар скрыли
+		// Фигура нарисована: откл рисование, тулбар скрыли
 		drawingActions.resetDrawing();
 		drawingActions.hideTools();
 
-		// Нажали Отмена: снова показали тулбар и убрали уже нарисованую фигуру
+		// Отмена: показали тулбар, убрали уже нарисованую фигуру, вкл кнопку NewPlace
 		$('.cancel').click(function (e) {
 			e.preventDefault();
 			place.pop();
@@ -74,8 +88,12 @@ function initMap() {
 		const polygon_coordinates = getPolygon(vertices);
 		place.push(polygon_coordinates);
 		console.log(place);
+
+		// Фигура нарисована: откл рисование, тулбар скрыли
 		drawingActions.resetDrawing();
 		drawingActions.hideTools();
+
+		// Отмена: показали тулбар, убрали уже нарисованую фигуру, вкл кнопку NewPlace		
 		$('.cancel').click(function (e) {
 			e.preventDefault();
 			place.pop();
@@ -85,6 +103,7 @@ function initMap() {
 	});
 }
 
+// Получаем координаты вершин полигона и заносим их в объект
 function getPolygon(vertices) {
 	const polygon = {};
 	vertices.forEach(function (el, index) {
@@ -94,4 +113,33 @@ function getPolygon(vertices) {
 		}
 	});
 	return polygon;
+}
+
+const modalActions = {
+	// Открываем модалку
+	openModal() {
+		$('.overlay').fadeIn(400, // анимируем показ обложки 
+			function () { // далее показываем мод. окно 
+				$('.modal_form')
+					.css('display', 'block')
+					.animate({ opacity: 1 }, 200);
+			});
+	},
+	// Закрываем модалку
+	closeModalInstantly() {
+		$('.modal_form')
+			.animate({ opacity: 0 }, 200,  // уменьшаем прозрачность 
+				function () { // пoсле aнимaции 
+					$(this).css('display', 'none'); // скрываем окно 
+					$('.overlay').fadeOut(400); // скрывaем пoдлoжку 
+				}
+			);
+	},
+	// Закрываем модалку по клику на Х или оверлей
+	closeModal() {
+		let that = this;
+		$('.modal_close, .overlay').click(function () {
+			that.closeModalInstantly();
+		});
+	},
 }
