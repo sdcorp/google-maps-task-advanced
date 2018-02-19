@@ -51,36 +51,37 @@ function initMap() {
 		$('.newPlace').removeAttr('disabled');
 	});
 
-	google.maps.event.addListener(drawingManager, 'overlaycomplete', function (event) {
-		if (event.type == 'rectangle') {
-			const rectangle = event.overlay;
-			const rectangle_coordinates = rectangle.getBounds().toJSON();
-			place.push(rectangle_coordinates);
-			console.log(place);
-			drawingActions.resetDrawing()
-			drawingActions.hideTools()
-			$('.cancel').click(function (e) {
-				e.preventDefault();
-				place.pop();
-				drawingActions.showTools();
-				drawingActions.removeFigure.call(rectangle);
-			});
-		}
-		if (event.type == 'polygon') {
-			const polygon = event.overlay;
-			const vertices = polygon.getPath().getArray();
-			const polygon_coordinates = getPolygon(vertices);
-			place.push(polygon_coordinates);
-			console.log(place);
-			drawingActions.resetDrawing();
-			drawingActions.hideTools();
-			$('.cancel').click(function (e) {
-				e.preventDefault();
-				place.pop();
-				drawingActions.showTools();
-				drawingActions.removeFigure.call(polygon);
-			});
-		}
+	google.maps.event.addListener(drawingManager, 'rectanglecomplete', function (rectangle) {
+		const rectangle_coordinates = rectangle.getBounds().toJSON();
+		place.push(rectangle_coordinates);
+		console.log(place);
+
+		// Фигура нарисована: нельзя рисовать, тулбар скрыли
+		drawingActions.resetDrawing();
+		drawingActions.hideTools();
+
+		// Нажали Отмена: снова показали тулбар и убрали уже нарисованую фигуру
+		$('.cancel').click(function (e) {
+			e.preventDefault();
+			place.pop();
+			drawingActions.showTools();
+			drawingActions.removeFigure.call(rectangle);
+		});
+	});
+
+	google.maps.event.addListener(drawingManager, 'polygoncomplete', function (polygon) {
+		const vertices = polygon.getPath().getArray();
+		const polygon_coordinates = getPolygon(vertices);
+		place.push(polygon_coordinates);
+		console.log(place);
+		drawingActions.resetDrawing();
+		drawingActions.hideTools();
+		$('.cancel').click(function (e) {
+			e.preventDefault();
+			place.pop();
+			drawingActions.showTools();
+			drawingActions.removeFigure.call(polygon);
+		});
 	});
 }
 
