@@ -12,4 +12,27 @@ function initMap() {
 		},
 	});
 	drawingManager.setMap(myMap);
+
+	const drawingActions = {
+		showTools() {
+			drawingManager.setOptions({
+				drawingControl: true
+			});
+		},
+
+		hideTools() {
+			drawingManager.setOptions({
+				drawingControl: false
+			});
+		},
+
+		resetDrawing() {
+			drawingManager.setDrawingMode(null)
+		},
+
+		removeFigure() {
+			this.setMap(null)
+		},
+
+	}
 }
